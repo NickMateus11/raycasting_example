@@ -159,18 +159,20 @@ def main():
         for pairs in points_of_interest:
             # add line end points as well as slight CW and CCW rotated points (helps see around corner edges)
             ang = 1e-3
+            px = pairs[0] - m_pos[0]
+            py = pairs[1] - m_pos[1]
             rays.append( (m_pos, 
-                (math.cos(ang)*pairs[0] - math.sin(ang)*pairs[1], 
-                math.sin(ang)*pairs[0] + math.cos(ang)*pairs[1]) )) 
+                ( (math.cos(ang)*px - math.sin(ang)*py) + m_pos[0], 
+                  (math.sin(ang)*px + math.cos(ang)*py) + m_pos[1])) ) 
             rays.append( (m_pos, 
-                (math.cos(-ang)*pairs[0] - math.sin(-ang)*pairs[1], 
-                math.sin(-ang)*pairs[0] + math.cos(-ang)*pairs[1]) )) 
+                ( (math.cos(-ang)*px - math.sin(-ang)*py) + m_pos[0], 
+                (math.sin(-ang)*px + math.cos(-ang)*py) + m_pos[1] ) )) 
             rays.append( (m_pos, pairs))      
 
         all_intersections = []
 
         for r in rays:
-            pygame.draw.line(screen, (100,100,100), *r, 1)
+            # pygame.draw.line(screen, (100,100,100), *r, 1)
 
             intersections = []
             for L in lines: 
@@ -188,13 +190,13 @@ def main():
 
             sorted_intersections = sorted(intersections, key=lambda p: (m_pos[0]-p[0])**2 + (m_pos[1]-p[1])**2)
             if len(sorted_intersections)>0:
-                pygame.draw.circle(screen, RED, sorted_intersections[0], 5)
+                # pygame.draw.circle(screen, RED, sorted_intersections[0], 5)
                 all_intersections.append(sorted_intersections[0])
             
         pygame.draw.circle(screen, BLACK, m_pos, 10)
 
-        for p in static_intersections:
-            pygame.draw.circle(screen, (0,255,0), p, 5)
+        # for p in static_intersections:
+        #     pygame.draw.circle(screen, (0,255,0), p, 5)
 
         all_intersections = sorted(all_intersections, \
             key=lambda p: math.atan2((p[1]-m_pos[1]), (p[0]-m_pos[0])))
