@@ -1,6 +1,7 @@
 import pygame
 import random
 import math
+import time
   
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -98,10 +99,11 @@ def main():
     
         ## surface 2d
 
+        time_2d = time.time()
         rays = []
         # r_len = 200
         fov = 60
-        rays_per_deg = 1
+        rays_per_deg = 2
         for i in range(fov*rays_per_deg):   
             ang = i/rays_per_deg - fov//2
             ray = m_dir.rotate(ang)
@@ -129,8 +131,11 @@ def main():
                 all_intersections.append([intersect_line, pygame.Vector2(intersect_p - p_pos)])
             
         pygame.draw.circle(surface_2d, WHITE, p_pos, 10)
+        time_2d = time.time() - time_2d
 
         ## surface 3d
+        time_3d = time.time()
+
         s3_rect = surface_3d.get_rect()
         for i in range(len(all_intersections)):
             euclid_d = all_intersections[i][1].magnitude()
@@ -144,6 +149,7 @@ def main():
                 (s3_rect.w//fov*i//rays_per_deg,s3_rect.w//2+h//2), 
                 (s3_rect.w//fov*i//rays_per_deg,s3_rect.w//2-h//2), 
                 math.ceil(s3_rect.w//fov/rays_per_deg))
+        time_3d = time.time() - time_3d
 
         # flip() updates the screen to make our changes visible
         screen.blit(surface_2d, (0,0))
@@ -152,6 +158,8 @@ def main():
         
         # maintain framerate
         clock.tick(FPS)
+        # print(clock.get_fps())
+        # print(time_2d, time_3d)
     
     pygame.quit()
 
